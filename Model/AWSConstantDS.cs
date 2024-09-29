@@ -11,7 +11,7 @@ namespace WebAPI.Samples.Model
    
     public static class AWSConstants
     {
-        public static string AccessKeyID = "AKIAYQD66C2VIIXMLAO6";
-        public static string SecretAccessKey = "z18DMebjBxq4gBqcUDVC4pKMaMqteeZFZJySZqza";
+        public static string AccessKeyID = "345";
+        public static string SecretAccessKey = "345";
     }
 }
