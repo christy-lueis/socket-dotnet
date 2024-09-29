@@ -1,0 +1,9 @@
+/.vs/*
+/bin/*
+/obj/*
+/.csproj.user
+*.user
+/Properties/PublishProfiles/FolderProfile.pubxml
+/.vs
+/obj
+/bin

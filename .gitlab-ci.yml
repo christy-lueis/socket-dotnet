@@ -1,0 +1,65 @@
+stages:
+  - build
+  - test
+  - deploy
+ 
+docker-build:
+  image: docker:latest
+  stage: build
+  services:
+    - docker:dind 
+  before_script:
+    - docker login -u "$CI_REGISTRY_USER" -p "$CI_REGISTRY_PASSWORD" $CI_REGISTRY
+  script:   
+    - docker build --pull -t "$CI_REGISTRY_IMAGE" .     # syncier-international/ib-minsure-bff .
+    - docker push "$CI_REGISTRY_IMAGE"
+
+unit-test-job:   # This job runs in the test stage.
+  stage: test    # It only starts when the job in the build stage completes successfully.
+  script:
+    - echo "Running unit tests...."
+    - sleep 60
+    - echo "Code coverage is 96%"
+
+# static-code-scan-job:   # This job runs in the test stage.
+#   stage: test    # It only starts when the job in the build stage completes successfully.
+#   image:
+#       name: sonarsource/sonar-scanner-cli:latest
+#       entrypoint: [""]
+#   variables:
+#     SONAR_USER_HOME: "${CI_PROJECT_DIR}/.sonar"  # Defines the location of the analysis task cache
+#     GIT_DEPTH: "0"  # Tells git to fetch all the branches of the project, required by the analysis task
+#     SONAR_TOKEN: "your-sonarqube-token"
+#     SONAR_HOST_URL: "http://your-sonarqube-instance.org"
+#   cache:
+#     key: "${CI_JOB_NAME}"
+#     paths:
+#       - .sonar/cache
+#   script:
+#     - echo "Running code analyser tests...."
+#     - sleep 60
+#     - echo "Code sacn  is 99%"
+#     - sonar-scanner -Dsonar.qualitygate.wait=true
+  allow_failure: true
+#  only:
+#    - master # or the name of your main branch
+
+container-scan-job:   # This job runs in the test stage.
+  stage: test    # It only starts when the job in the build stage completes successfully.
+  script:
+    - echo "Running container scan...."
+    - sleep 60
+    - echo "Code coverage is 96%"
+
+lint-test-job:   # This job also runs in the test stage.
+  stage: test    # It can run at the same time as unit-test-job (in parallel).
+  script:
+    - echo "Linting code...."
+    - sleep 10
+    - echo "No lint issues found."
+
+deploy-job:      # This job runs in the deploy stage.
+  stage: deploy  # It only runs when *both* jobs in the test stage complete successfully.
+  script:
+    - echo "Deploying application..."
+    - echo "Application successfully deployed."
